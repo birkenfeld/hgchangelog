@@ -27,10 +27,11 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
 
     # check if changelog changed
     logname = ui.config('changelog', 'filename', 'CHANGES')
-    match = cmdutil.match(repo, pats, opts)
-    if logname not in match:
-        # changelog did not change
-        return orig_commit(ui, repo, *pats, **opts)
+    if pats:
+        match = cmdutil.match(repo, pats, opts)
+        if logname not in match:
+            # changelog is not mentioned
+            return orig_commit(ui, repo, *pats, **opts)
     logmatch = cmdutil.match(repo, [logname], {})
     # get diff of changelog
     log = []
