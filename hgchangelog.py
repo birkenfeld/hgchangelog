@@ -5,14 +5,17 @@
 
     Mercurial extension to read commit message from changelog.
 
-    Usage: set the name of your changelog in hgrc::
+    Usage: activate the extension and set the name of your changelog in hgrc::
+
+        [extensions]
+        hgchangelog = path/to/hgchangelog.py
 
         [changelog]
         filename = CHANGES
 
     Then, committing without a given message or logfile will check if the
     changelog is included in the commit. If it is, the commit message shown
-    in the editor will contain everything added to the changelog.
+    in the editor will default to all text added to the changelog.
 
     :copyright: 2008 by Georg Brandl.
     :license: BSD.
