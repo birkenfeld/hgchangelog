@@ -5,6 +5,15 @@
 
     Mercurial extension to read commit message from changelog.
 
+    Usage: set the name of your changelog in hgrc::
+
+        [changelog]
+        filename = CHANGES
+
+    Then, committing without a given message or logfile will check if the
+    changelog is included in the commit. If it is, the commit message shown
+    in the editor will contain everything added to the changelog.
+
     :copyright: 2008 by Georg Brandl.
     :license: BSD.
 """
@@ -34,6 +43,7 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
     log = '\n'.join(log)
     # strip bullet points and whitespace on the left
     log = log.lstrip('*- \t')
+    # always let the user edit the message
     opts['force_editor'] = True
     opts['message'] = log
     return orig_commit(ui, repo, *pats, **opts)
@@ -41,5 +51,5 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
 
 def uisetup(ui):
     if not hasattr(extensions, 'wrapcommand'):
-        return
+        return # doesn't work as nicely on old hg versions
     extensions.wrapcommand(commands.table, 'commit', new_commit)
