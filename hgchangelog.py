@@ -17,11 +17,29 @@
     changelog is included in the commit. If it is, the commit message shown
     in the editor will default to all text added to the changelog.
 
-    :copyright: 2008 by Georg Brandl.
+    :copyright: 2008 by Georg Brandl, Armin Ronacher.
     :license: BSD.
 """
-
+import re
 from mercurial import commands, cmdutil, extensions, patch
+
+
+_bullet_re = re.compile(r'\s*[-+]\s+')
+
+
+def normalize_log(lines):
+    """Outdents newly inserted list items."""
+    last_indention = 0
+    for idx, line in enumerate(lines):
+        match = _bullet_re.match(line)
+        if match is not None:
+            last_indention = match.end()
+            lines[idx] = line[last_indention:]
+        elif last_indention:
+            if not line[:last_indention].strip():
+                lines[idx] = line[last_indention:]
+    return '\n'.join(lines)
+
 
 def new_commit(orig_commit, ui, repo, *pats, **opts):
     if opts['message'] or opts['logfile']:
@@ -36,17 +54,16 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
             # changelog is not mentioned
             return orig_commit(ui, repo, *pats, **opts)
     logmatch = cmdutil.match(repo, [logname], {})
+
     # get diff of changelog
     log = []
     for chunk in patch.diff(repo, None, None, match=logmatch):
         for line in chunk.splitlines():
             # naive: all added lines are the changelog
             if line.startswith('+') and not line.startswith('+++'):
-                line = line[1:].strip()
-                if line: log.append(line)
-    log = '\n'.join(log)
-    # strip bullet points and whitespace on the left
-    log = log.lstrip('*- \t')
+                log.append(line[1:].rstrip().expandtabs())
+    log = normalize_log(log)
+
     # always let the user edit the message
     opts['force_editor'] = True
     opts['message'] = log
