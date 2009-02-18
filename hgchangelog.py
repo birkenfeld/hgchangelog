@@ -17,7 +17,7 @@
     changelog is included in the commit. If it is, the commit message shown
     in the editor will default to all text added to the changelog.
 
-    :copyright: 2008 by Georg Brandl, Armin Ronacher.
+    :copyright: 2008, 2009 by Georg Brandl, Armin Ronacher.
     :license:
         This program is free software; you can redistribute it and/or modify it
         under the terms of the GNU General Public License as published by the
@@ -37,7 +37,7 @@ import re
 from mercurial import commands, cmdutil, extensions, patch
 
 
-_bullet_re = re.compile(r'\s*[-+]\s+')
+_bullet_re = re.compile(r'\s*[-+*]\s+')
 
 
 def normalize_log(lines):
