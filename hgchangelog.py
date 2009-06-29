@@ -67,6 +67,7 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
             # changelog is not mentioned
             return orig_commit(ui, repo, *pats, **opts)
     logmatch = cmdutil.match(repo, [logname], {})
+    logmatch.bad = lambda f, msg: None  # don't complain if file is missing
 
     # get diff of changelog
     log = []
