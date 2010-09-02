@@ -1,39 +1,43 @@
 # -*- coding: utf-8 -*-
+#
+# changelog mercurial extension
+#
+# Copyright (c) 2008-2010 by Georg Brandl, Armin Ronacher.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+# Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+"""read commit message from changelog
+
+Usage: activate the extension and set the name of your changelog in hgrc::
+
+    [extensions]
+    hgchangelog = path/to/hgchangelog.py
+
+    [changelog]
+    filename = CHANGES
+
+Then, committing without a given message or logfile will check if the changelog
+is included in the commit.  If it is, the commit message shown in the editor
+will default to all text added to the changelog.
+
+Note: The ``changelog.filename`` setting is also useful to set in the
+per-repository configuration at ``.hg/hgrc``.
 """
-    hgchangelog
-    ~~~~~~~~~~~
 
-    Mercurial extension to read commit message from changelog.
-
-    Usage: activate the extension and set the name of your changelog in hgrc::
-
-        [extensions]
-        hgchangelog = path/to/hgchangelog.py
-
-        [changelog]
-        filename = CHANGES
-
-    Then, committing without a given message or logfile will check if the
-    changelog is included in the commit. If it is, the commit message shown
-    in the editor will default to all text added to the changelog.
-
-    :copyright: 2008, 2009 by Georg Brandl, Armin Ronacher.
-    :license:
-        This program is free software; you can redistribute it and/or modify it
-        under the terms of the GNU General Public License as published by the
-        Free Software Foundation; either version 2 of the License, or (at your
-        option) any later version.
-
-        This program is distributed in the hope that it will be useful, but
-        WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
-        Public License for more details.
-
-        You should have received a copy of the GNU General Public License along
-        with this program; if not, write to the Free Software Foundation, Inc.,
-        51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-"""
 import re
+
 from mercurial import commands, cmdutil, extensions, patch
 
 
