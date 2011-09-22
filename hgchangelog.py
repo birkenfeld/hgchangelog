@@ -2,7 +2,7 @@
 #
 # changelog mercurial extension
 #
-# Copyright (c) 2008-2010 by Georg Brandl, Armin Ronacher.
+# Copyright (c) 2008-2011 by Georg Brandl, Armin Ronacher.
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -38,8 +38,7 @@ per-repository configuration at ``.hg/hgrc``.
 
 import re
 
-from mercurial import commands, cmdutil, extensions, patch
-
+from mercurial import commands, extensions, patch, match as matchmod
 
 _bullet_re = re.compile(r'\s*[-+*]\s+')
 
@@ -66,11 +65,12 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
     # check if changelog changed
     logname = ui.config('changelog', 'filename', 'CHANGES')
     if pats:
-        match = cmdutil.match(repo, pats, opts)
+        match = matchmod.match(repo.root, repo.getcwd(), pats,
+                               opts.get('include'), opts.get('exclude'))
         if logname not in match:
             # changelog is not mentioned
             return orig_commit(ui, repo, *pats, **opts)
-    logmatch = cmdutil.match(repo, [logname], {})
+    logmatch = matchmod.match(repo.root, repo.getcwd(), [logname])
     logmatch.bad = lambda f, msg: None  # don't complain if file is missing
 
     # get diff of changelog
