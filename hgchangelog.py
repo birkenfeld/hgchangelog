@@ -2,7 +2,7 @@
 #
 # changelog mercurial extension
 #
-# Copyright (c) 2008-2011 by Georg Brandl, Armin Ronacher.
+# Copyright (c) 2008-2013 by Georg Brandl, Armin Ronacher.
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -58,8 +58,8 @@ def normalize_log(lines):
 
 
 def new_commit(orig_commit, ui, repo, *pats, **opts):
-    if opts['message'] or opts['logfile']:
-        # don't act if user already specified a message
+    if opts['message'] or opts['logfile'] or opts.get('amend'):
+        # don't act if user already specified a message, or for amend commits
         return orig_commit(ui, repo, *pats, **opts)
 
     # check if changelog changed
