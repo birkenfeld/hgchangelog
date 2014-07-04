@@ -83,7 +83,7 @@ def new_commit(orig_commit, ui, repo, *pats, **opts):
     log = normalize_log(log)
 
     # always let the user edit the message
-    opts['force_editor'] = True
+    opts['edit'] = True
     opts['message'] = log
     return orig_commit(ui, repo, *pats, **opts)
 
